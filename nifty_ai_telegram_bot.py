@@ -9,8 +9,8 @@ from ta.trend import MACD, EMAIndicator
 from ta.momentum import RSIIndicator
 import pytz
 # ========== CONFIG ==========
-BOT_TOKEN = "<your_bot_token>"
-CHAT_ID = "<your_chat_id>"
+BOT_TOKEN = "7974119756:AAESnz98xnm3XhPqoUkVQ6FQVQjOlsWAfw4"
+CHAT_ID = "622334857"
 INDEX = "^NSEI"
 BANK_NIFTY = "^NSEBANK"
 EXPIRY = (datetime.now() + timedelta(days=3)).strftime("%Y-%m-%d")  # Approx expiry
