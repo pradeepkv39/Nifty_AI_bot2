@@ -23,21 +23,21 @@ def fetch_data(symbol):
 
 #def supertrend(df, period=10, multiplier=3):
     # Calculate basic price
-    hl2 = (df['High'] + df['Low']) / 2
+   # hl2 = (df['High'] + df['Low']) / 2
 
     # Calculate ATR using True Range method
-    df['H-L'] = df['High'] - df['Low']
-    df['H-PC'] = abs(df['High'] - df['Close'].shift(1))
-    df['L-PC'] = abs(df['Low'] - df['Close'].shift(1))
-    df['TR'] = df[['H-L', 'H-PC', 'L-PC']].max(axis=1)
-    df['ATR'] = df['TR'].rolling(window=period).mean()
+   # df['H-L'] = df['High'] - df['Low']
+   # df['H-PC'] = abs(df['High'] - df['Close'].shift(1))
+  #df['L-PC'] = abs(df['Low'] - df['Close'].shift(1))
+  #  df['TR'] = df[['H-L', 'H-PC', 'L-PC']].max(axis=1)
+   # df['ATR'] = df['TR'].rolling(window=period).mean()
 
     # Upper and Lower Bands
-    df['UpperBand'] = hl2 + multiplier * df['ATR']
-    df['LowerBand'] = hl2 - multiplier * df['ATR']
+   # df['UpperBand'] = hl2 + multiplier * df['ATR']
+   # df['LowerBand'] = hl2 - multiplier * df['ATR']
 
     # Initialize Supertrend
-    df['Supertrend'] = True
+  #  df['Supertrend'] = True
 
   #  for i in range(period, len(df)):
      #   if pd.isna(df['ATR'].iloc[i]):
