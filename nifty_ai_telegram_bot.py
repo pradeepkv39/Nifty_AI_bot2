@@ -21,7 +21,7 @@ def fetch_data(symbol):
     df.dropna(inplace=True)
     return df
 
-def supertrend(df, period=10, multiplier=3):
+#def supertrend(df, period=10, multiplier=3):
     # Calculate basic price
     hl2 = (df['High'] + df['Low']) / 2
 
@@ -39,26 +39,26 @@ def supertrend(df, period=10, multiplier=3):
     # Initialize Supertrend
     df['Supertrend'] = True
 
-    for i in range(period, len(df)):
-        if pd.isna(df['ATR'].iloc[i]):
-            continue  # skip until ATR is fully formed
+  #  for i in range(period, len(df)):
+     #   if pd.isna(df['ATR'].iloc[i]):
+         #   continue  # skip until ATR is fully formed
 
-        close = df['Close'].iloc[i]
-        prev_upper = df['UpperBand'].iloc[i - 1]
-        prev_lower = df['LowerBand'].iloc[i - 1]
-        prev_supertrend = df['Supertrend'].iloc[i - 1]
+    #    close = df['Close'].iloc[i]
+    #    prev_upper = df['UpperBand'].iloc[i - 1]
+    #    prev_lower = df['LowerBand'].iloc[i - 1]
+    #   prev_supertrend = df['Supertrend'].iloc[i - 1]
 
-        if close > prev_upper:
-            df.at[i, 'Supertrend'] = True
-        elif close < prev_lower:
-            df.at[i, 'Supertrend'] = False
-        else:
-            df.at[i, 'Supertrend'] = prev_supertrend
+    #    if close > prev_upper:
+    #        df.at[i, 'Supertrend'] = True
+    #   elif close < prev_lower:
+    #       df.at[i, 'Supertrend'] = False
+    #     else:
+    #       df.at[i, 'Supertrend'] = prev_supertrend
 
     # Drop helper columns to clean up
-    df.drop(columns=['H-L', 'H-PC', 'L-PC', 'TR'], inplace=True)
+   # df.drop(columns=['H-L', 'H-PC', 'L-PC', 'TR'], inplace=True)
 
-    return df
+  #  return df
 def ema_strategy(df):
     ema_5 = EMAIndicator(df['Close'], window=5).ema_indicator()
     ema_20 = EMAIndicator(df['Close'], window=20).ema_indicator()
