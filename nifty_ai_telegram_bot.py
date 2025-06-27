@@ -15,27 +15,49 @@ INDEX = "^NSEI"
 BANK_NIFTY = "^NSEBANK"
 EXPIRY = (datetime.now() + timedelta(days=3)).strftime("%Y-%m-%d")  # Approx expiry
 
+
 def fetch_data(symbol):
-    df = yf.download(symbol, period="5d", interval="15m")
+    df = yf.download(symbol, period="5d", interval="15m", auto_adjust=True)
     df.dropna(inplace=True)
     return df
+
 def supertrend(df, period=10, multiplier=3):
+    # Calculate basic price
     hl2 = (df['High'] + df['Low']) / 2
-    atr = df['High'].rolling(window=period).max() - df['Low'].rolling(window=period).min()
-    atr = atr.rolling(window=period).mean()
-    upperband = hl2 + multiplier * atr
-    lowerband = hl2 - multiplier * atr
-    supertrend = [True] * len(df)
 
-    for i in range(1, len(df)):
-        if df['Close'][i] > upperband[i - 1]:
-            supertrend[i] = True
-        elif df['Close'][i] < lowerband[i - 1]:
-            supertrend[i] = False
+    # Calculate ATR using True Range method
+    df['H-L'] = df['High'] - df['Low']
+    df['H-PC'] = abs(df['High'] - df['Close'].shift(1))
+    df['L-PC'] = abs(df['Low'] - df['Close'].shift(1))
+    df['TR'] = df[['H-L', 'H-PC', 'L-PC']].max(axis=1)
+    df['ATR'] = df['TR'].rolling(window=period).mean()
+
+    # Upper and Lower Bands
+    df['UpperBand'] = hl2 + multiplier * df['ATR']
+    df['LowerBand'] = hl2 - multiplier * df['ATR']
+
+    # Initialize Supertrend
+    df['Supertrend'] = True
+
+    for i in range(period, len(df)):
+        if pd.isna(df['ATR'].iloc[i]):
+            continue  # skip until ATR is fully formed
+
+        close = df['Close'].iloc[i]
+        prev_upper = df['UpperBand'].iloc[i - 1]
+        prev_lower = df['LowerBand'].iloc[i - 1]
+        prev_supertrend = df['Supertrend'].iloc[i - 1]
+
+        if close > prev_upper:
+            df.at[i, 'Supertrend'] = True
+        elif close < prev_lower:
+            df.at[i, 'Supertrend'] = False
         else:
-            supertrend[i] = supertrend[i - 1]
+            df.at[i, 'Supertrend'] = prev_supertrend
 
-    df['Supertrend'] = supertrend
+    # Drop helper columns to clean up
+    df.drop(columns=['H-L', 'H-PC', 'L-PC', 'TR'], inplace=True)
+
     return df
 def ema_strategy(df):
     ema_5 = EMAIndicator(df['Close'], window=5).ema_indicator()
